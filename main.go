@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "golang_web_api/api"
 
 func main() {
-	fmt.Println("this is a test")
+	api.InitServer()
 }
