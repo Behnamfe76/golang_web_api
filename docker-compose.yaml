@@ -1,1 +1,54 @@
 services:
+
+    postgres:
+        image: postgres
+        container_name: postgres
+        environment:
+            POSTGRES_DATABASE: web_api
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: admin
+            PGDATA: /data/postgres
+        volumes:
+            - postgres:/data/postgres
+        ports:
+            - "5432:5432"
+        networks:
+           - web_api
+        restart: unless-stopped
+    pgadmin:
+        image: dpage/pgadmin4
+        container_name: pgadmin
+        environment:
+            PGADMIN_DEFAULT_EMAIL: "behnam@gmail.com"
+            PGADMIN_DEFAULT_PASSWORD: "root"
+        volumes:
+            - pgadmin:/var/lib/pgadmin
+        ports:
+            - "8070:80"
+        networks:
+            - web_api
+        depends_on:
+            - postgres
+        restart: unless-stopped
+    redis:
+        image: redis:latest
+        container_name: redis
+        command: ["redis-server", "/etc/redis/redis.conf"]
+        volumes:
+            - ./redis/redis.conf:/etc/redis/redis.conf
+            - redis:/etc/redis.conf
+            - redis:/data
+        networks:
+            - web_api
+        ports:
+            - "6379:6379"
+
+volumes:
+    postgres:
+    pgadmin:
+    redis:
+    logs:
+
+networks:
+    web_api:
+        driver: bridge
